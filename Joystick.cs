@@ -15,8 +15,14 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     [SerializeField]
     private float deadZone = 0;
 
-    //[HideInInspector]
-    public static Vector2 input;
+    [SerializeField]
+    private RectTransform background;
+
+    [SerializeField]
+    private RectTransform handle;
+
+    [HideInInspector]
+    public Vector2 input;
 
     public enum JoystickType
     {
@@ -31,8 +37,6 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         Vertical
     }
 
-    private RectTransform background;
-    private RectTransform handle;
     private RectTransform baseRect;
     private Canvas canvas;
     private Camera cam;
@@ -42,29 +46,14 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     {
         GetAllComponents();
 
-        //AnchorVisuals();
-
         SetJoystickMode(joystickType);
     }
 
     private void GetAllComponents()
     {
         //Gets all the needed components
-        background = transform.GetChild(0).GetComponent<RectTransform>();
-        handle = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
         baseRect = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
-    }
-
-    private void AnchorVisuals()
-    {
-        //Anchors the handle and the background
-        Vector2 center = new Vector2(0.5f, 0.5f);
-        background.pivot = center;
-        handle.anchorMin = center;
-        handle.anchorMax = center;
-        handle.pivot = center;
-        handle.anchoredPosition = Vector2.zero;
     }
 
     public void SetJoystickMode(JoystickType joystickType)
@@ -85,8 +74,8 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         //If the joystick type is not fixed, moves the joystick to where the player clicks/touches the screen
         if (joystickType != JoystickType.Fixed)
         {
-            background.anchoredPosition = MoveJoystickToClick(eventData.position);
             background.gameObject.SetActive(true);
+            background.anchoredPosition = MoveJoystickToClick(eventData.position);
         }
 
         //Updates the joystick if the player clicks/touches the joystick
